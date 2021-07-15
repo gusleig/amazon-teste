@@ -381,7 +381,6 @@ def amazoncheck(url):
         availabiliy = soup.select_one('div[id="availability"]').text
         availabiliy = ''.join(availabiliy).strip() if availabiliy else ''
 
-
     except AttributeError as err:
         tslog("Erro na leitura da página: %s" % err)
         price = 0
