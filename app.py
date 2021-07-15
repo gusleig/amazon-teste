@@ -37,6 +37,7 @@ proxy_list = []
 
 logfile = False
 
+
 def setup_ini(inifile='config.ini'):
 
     global smtp_server
@@ -51,7 +52,7 @@ def setup_ini(inifile='config.ini'):
 
     if not my_file.is_file():
 
-        txt = "[EMAIL]\nsmtp_host = smtp.email.sa-saopaulo-1.oci.oraclecloud.com\nsmtp_user = \nsmtp_pass = \nsmtp_port = 587\nsmtp_from = no-reply@clconsult.com.br"
+        txt = "[EMAIL]\nemail_admin = xxx@gmail.com\nsmtp_host = smtp.email.sa-saopaulo-1.oci.oraclecloud.com\nsmtp_user = \nsmtp_pass = \nsmtp_port = 587\nsmtp_from = no-reply@xxx.com"
         with open(inifile, 'w') as configfile:  # save
 
             configfile.write(txt)
