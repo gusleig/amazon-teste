@@ -213,10 +213,6 @@ def check_if_proxy_is_working(proxies, timeout=1):
 
 def get_proxies():
 
-    # from fp.fp import FreeProxy
-
-    # proxy = FreeProxy(country_id=['US', 'BR'], timeout=0.3, rand=True).get()
-    # proxy = proxy.replace("http://", "")
     url = 'https://free-proxy-list.net/'
     tslog("Loading proxy list from: %s" % url)
 
@@ -224,7 +220,7 @@ def get_proxies():
 
     country_id = ['BR','US','CA', 'DE', 'ID', 'JP','IN','RU','MX', 'GB', 'AR']
     anonym = False
-    ssl =  True
+    ssl = True
 
     try:
         response = requests.get(url)
@@ -257,7 +253,6 @@ def get_proxies():
                and ((tr_elements[i][4].text_content()) == 'anonymous' if anonym else True)
                and ((tr_elements[i][6].text_content()) == 'yes' if ssl else True)]  # check the 5th column for `anonymous` if needed
     '''
-
 
     return proxies
 
@@ -312,7 +307,6 @@ def connect(url, proxy, headers):
     except requests.exceptions.RequestException as e:
 
         tslog("Main: Erro de conexão... Tentando novamente %s" % e)
-
 
     if r1:
         # check for error http
