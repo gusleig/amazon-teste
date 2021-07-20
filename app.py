@@ -478,7 +478,7 @@ def job():
 
 if __name__ == '__main__':
     setup_ini()
-    timeframe = 1
+    timeframe = 30
     tslog("Initiating... Tracking every %s minutes" % timeframe, True)
 
     schedule.every(timeframe).minutes.do(job)
