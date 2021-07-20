@@ -35,6 +35,7 @@ smtp_passwd = ''
 proxy_list = []
 
 logfile = False
+timeframe = 30
 
 
 def setup_ini(inifile='config.ini'):
@@ -478,7 +479,7 @@ def job():
 
 if __name__ == '__main__':
     setup_ini()
-    timeframe = 30
+
     tslog("Initiating... Tracking every %s minutes" % timeframe, True)
 
     schedule.every(timeframe).minutes.do(job)

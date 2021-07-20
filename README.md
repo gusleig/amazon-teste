@@ -13,6 +13,20 @@ You can change the check interval minutes inside the code:
 timeframe = 30 #minutes
 ```
 
+## Log file
+
+The scripts create a log file in the format YYYY-MM-DD.txt
+
+You can switch to verbose loggin changing the line:
+
+logfile = False
+
+to
+
+logfile = True
+
+## Email alerts
+
 For Email alerts, fill the config.ini file with your configuration.
 
 ```
