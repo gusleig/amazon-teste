@@ -4,11 +4,10 @@ import requests
 from time import sleep
 import time
 import schedule
-import smtplib
 import argparse
-import locale, random
+import locale
+import random
 import sys
-from itertools import cycle
 import csv
 from pathlib import Path
 import datetime
@@ -296,7 +295,6 @@ def connect(url, proxy, headers):
 
     try:
         if proxy:
-
             tslog("Using proxy: " + proxy)
             r1 = requests.get(url, headers=headers, proxies={"http": proxy, "https": proxy}, timeout=10)
 
@@ -336,8 +334,13 @@ def amazoncheck(url):
     user_agent = get_user_agent()
 
     headers = {"User-Agent": user_agent,
-            "Accept-Encoding": "gzip, deflate", "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-            "DNT": "1", "Connection": "close", "Upgrade-Insecure-Requests": "1"}
+            "Accept-Encoding": "gzip, deflate",
+            'Accept-Language': 'pt-BR,en-GB,en-US;q=0.9,en;q=0.8',
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "DNT": "1",
+            'Host': 'httpbin.org',
+            "Connection": "close",
+            "Upgrade-Insecure-Requests": "1"}
 
     # proxy_list = FreeProxy(country_id=['US', 'BR']).get()
 
