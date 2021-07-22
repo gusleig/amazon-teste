@@ -16,9 +16,6 @@ import configparser
 from bs4 import BeautifulSoup as bs
 from fp.fp import FreeProxy
 
-# Email id for who want to check availability
-receiver_email_id = "EMAIL_ID_OF_USER"
-
 LOG_FILE_PATH = os.path.dirname(os.path.realpath(__file__))
 
 config = configparser.ConfigParser(defaults=None, strict=False)
@@ -35,7 +32,7 @@ smtp_passwd = ''
 proxy_list = []
 
 logfile = False
-timeframe = 30
+timeframe = 1
 
 
 def setup_ini(inifile='config.ini'):
@@ -197,9 +194,9 @@ def send_email(subject='Alarme', body='Alarme', attach=''):
         tslog(" : Email com ERRO: " + str(e) + " \n")
 
 
-def check_if_proxy_is_working(proxies, timeout=1):
+def check_if_proxy_is_working(proxies, timeout=10):
     try:
-        with requests.get('https://www.google.com', proxies=proxies, timeout=timeout, stream=True) as r:
+        with requests.get('https://www.amazon.com.br', proxies=proxies, timeout=timeout, stream=True) as r:
             if r.raw.connection.sock:
                 if r.raw.connection.sock.getpeername()[0] == proxies['https'].split(':')[1][2:]:
                     tslog("Proxy %s OK!" % proxies['https'])
@@ -218,7 +215,8 @@ def get_proxies():
 
     # url = 'https://www.sslproxies.org'
 
-    country_id = ['BR','US','CA', 'DE', 'ID', 'JP','IN','RU','MX', 'GB', 'AR']
+    country_id = ['BR', 'US', 'CA', 'DE', 'ID', 'JP', 'IN', 'RU', 'MX', 'GB', 'AR']
+    # country_id = False
     anonym = False
     ssl = True
 
@@ -240,7 +238,7 @@ def get_proxies():
             proxies.append(proxy)
     '''
     for i in range(1, 101):
-        if tr_elements[i][2].text_content() in country_id and ((tr_elements[i][4].text_content()) == 'anonymous' if anonym else True) and ((tr_elements[i][6].text_content()) == 'yes' if ssl else True):
+        if (tr_elements[i][2].text_content() in country_id if country_id else True) and ((tr_elements[i][4].text_content()) == 'anonymous' if anonym else True) and ((tr_elements[i][6].text_content()) == 'yes' if ssl else True):
             proxy =  {'https': "http://" + tr_elements[i][0].text_content() + ":" + tr_elements[i][1].text_content(),}
 
             if check_if_proxy_is_working(proxy) :
@@ -261,19 +259,19 @@ def get_user_agent():
 
     user_agent_list = [
         # Chrome
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36',
+        'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36',
         'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36',
-        'Mozilla/5.0 (Windows NT 5.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36',
+        'Mozilla/5.0 (Windows NT 5.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.71 Safari/537.36',
         'Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36',
         'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.157 Safari/537.36',
         'Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36',
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36',
-        'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36',
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36',
-        'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36',
+        'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.157 Safari/537.36',
+        'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36',
         # Firefox
-        'Mozilla/4.0 (compatible; MSIE 9.0; Windows NT 6.1)',
-        'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko',
+        'Mozilla/5.0 (Windows NT 5.1; rv:7.0.1) Gecko/20100101 Firefox/7.0.1',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0',
         'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)',
         'Mozilla/5.0 (Windows NT 6.1; Trident/7.0; rv:11.0) like Gecko',
         'Mozilla/5.0 (Windows NT 6.2; WOW64; Trident/7.0; rv:11.0) like Gecko',
@@ -283,8 +281,8 @@ def get_user_agent():
         'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)',
         'Mozilla/5.0 (Windows NT 6.1; Win64; x64; Trident/7.0; rv:11.0) like Gecko',
         'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; WOW64; Trident/6.0)',
-        'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)',
-        'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729)'
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:63.0) Gecko/20100101 Firefox/63.0',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:65.0) Gecko/20100101 Firefox/65.0'
     ]
     user_agent = random.choice(user_agent_list)
     return user_agent
@@ -297,7 +295,7 @@ def connect(url, proxy, headers):
     try:
         if proxy:
             tslog("Using proxy: " + proxy)
-            r1 = requests.get(url, headers=headers, proxies={"http": proxy, "https": proxy}, timeout=10)
+            r1 = requests.get(url, headers=headers, proxies={"http":  proxy, "https":  proxy}, timeout=20)
 
         else:
             tslog("No proxie connection...")
@@ -306,11 +304,15 @@ def connect(url, proxy, headers):
     except requests.exceptions.RequestException as e:
 
         tslog("Main: Erro de conexão... Tentando novamente %s" % e)
+        return None
+    except requests.exceptions.ConnectTimeout as et:
+        tslog("Main: Erro de conexão, Timeout ... Tentando novamente %s" % et)
+        return None
 
-    if r1:
-        # check for error http
-        if not 200 <= r1.status_code < 300:
-            tslog("Error while browsing in, code: %d" % r1.status_code)
+    # check for error http
+    if r1.status_code != 200:
+        tslog("Error while browsing in, code: %d" % r1.status_code)
+        r1 = None
 
     return r1
 
@@ -339,7 +341,6 @@ def amazoncheck(url):
             'Accept-Language': 'pt-BR,en-GB,en-US;q=0.9,en;q=0.8',
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
             "DNT": "1",
-            'Host': 'httpbin.org',
             "Connection": "close",
             "Upgrade-Insecure-Requests": "1"}
 
@@ -462,7 +463,14 @@ def job():
             csv_reader = csv.reader(csv_file, delimiter=';')
             line_count = 0
 
-            proxy_list = get_proxies()
+            while not proxy_list:
+
+                proxy_list = get_proxies()
+
+                if proxy_list:
+                   break
+                else:
+                    tslog("Trying to get valid proxy list")
 
             for row in csv_reader:
                 if line_count == 0:
