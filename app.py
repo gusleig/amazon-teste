@@ -32,7 +32,7 @@ smtp_passwd = ''
 proxy_list = []
 
 logfile = False
-timeframe = 1
+timeframe = 15
 
 
 def setup_ini(inifile='config.ini'):
@@ -142,9 +142,13 @@ def send_email(subject='Alarme', body='Alarme', attach=''):
 
     # We reference the image in the IMG SRC attribute by the ID we give it below
     msg = '<html><header><meta http-equiv="Content-Type" content="text/html; charset=utf-8">' \
-          '<title>SGPC Monitor</title></header><body>' + body + '<br/><img src="cid:image1"><br/></body></html>'
+          '<title>Amazon Monitor</title></header><body>' + body
 
-    msg = body + '<br/><img src="cid:image1"><br/>Nifty!'
+    if attach:
+        msg = msg + '<br/><img src="cid:image1"><br/></body></html>'
+    else:
+        msg = msg + '<br/></body></html>'
+
     msgText = MIMEText(msg, 'html')
 
     msgAlternative.attach(msgText)
@@ -187,7 +191,7 @@ def send_email(subject='Alarme', body='Alarme', attach=''):
 
         agora = datetime.datetime.now()
 
-        print(agora.strftime('%d-%m-%Y %H:%M') + ' : Email enviado com suceso')
+        tslog( 'Email enviado com suceso!')
 
     except Exception as e:
 
@@ -432,7 +436,7 @@ def readAsin(asin='B077PWK5BT', price=0.0):
 
     if ans in arr and price > 0 and price_real < price:
         subject = "[ALARME] Preço menor para %s" % title
-        body = "Preço menor para"
+        body = "Preço menor para %s, preço: %s " % (title, price_real)
 
         send_email(subject, body, '')
 
@@ -491,8 +495,16 @@ if __name__ == '__main__':
     tslog("Initiating... Tracking every %s minutes" % timeframe, True)
 
     schedule.every(timeframe).minutes.do(job)
-
+    runs = 0
     while True:
-        # running all pending tasks/jobs
-        schedule.run_pending()
+
+        n = schedule.idle_seconds()
+
+        if runs > 0:
+            # running all pending tasks/jobs
+            schedule.run_pending()
+        else:
+            schedule.run_all()
+
         time.sleep(1)
+        runs += 1
