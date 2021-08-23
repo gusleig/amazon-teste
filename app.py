@@ -430,13 +430,13 @@ def readAsin(asin='B077PWK5BT', price=0.0):
 
     if ans in arr and price == 0:
         subject = "[ALARME] Produto em estoque: %s" % title
-        body = "[ALARME] Produto em estoque: %s" % title
+        body = "[ALARME] Produto em estoque: %s \n Link para o site: %s" % (title, url)
 
         send_email(subject, body, '')
 
     if ans in arr and price > 0 and price_real < price:
         subject = "[ALARME] Preço menor para %s" % title
-        body = "Preço menor para %s, preço: %s " % (title, price_real)
+        body = "Preço menor para %s, preço: %s \n Link para o site: %s" % (title, price_real, url)
 
         send_email(subject, body, '')
 
